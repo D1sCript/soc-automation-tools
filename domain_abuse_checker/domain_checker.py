@@ -5,26 +5,26 @@ import sys
 from datetime import datetime
 import socket
 
-# Конфигурация
+# Configuration
 API_KEY = "Your API KEY"
-INPUT_FILE = path_to_file_with_domain  # Файл с доменами
+INPUT_FILE = path_to_file_with_domain  # File with domains
 
-# Создаем имя для файла с результатами
+# Create a name for the results file
 input_directory = os.path.dirname(INPUT_FILE)
 output_filename = f"abuseipdb_domains_results_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.csv"
 OUTPUT_FILE = os.path.join(input_directory, output_filename)
 
 def get_ip_from_domain(domain):
-    """Функция для получения IP-адреса из доменного имени"""
+    """Function to get IP address from domain name"""
     try:
         ip = socket.gethostbyname(domain)
         return ip
     except socket.gaierror:
-        print(f"   ❌ Ошибка: не удалось разрешить домен {domain}")
+        print(f"   ❌ Error: Failed to resolve domain {domain}")
         return None
 
 def check_ip(ip_address):
-    """Функция для проверки одного IP-адреса через AbuseIPDB API"""
+    """A function for checking a single IP address via the AbuseIPDB API"""
     url = 'https://api.abuseipdb.com/api/v2/check'
     
     headers = {
@@ -42,50 +42,50 @@ def check_ip(ip_address):
         response.raise_for_status()
         return response.json()
     except requests.exceptions.HTTPError as err:
-        print(f"   ❌ HTTP ошибка: {err}")
+        print(f"   ❌ HTTP error: {err}")
     except Exception as err:
-        print(f"   ❌ Другая ошибка: {err}")
+        print(f"   ❌ Another error: {err}")
     return None
 
 def main():
-    """Основная функция"""
-    # Читаем домены из файла
+    """Main function"""
+    # v
     try:
         with open(INPUT_FILE, 'r', encoding='utf-8') as file:
             domain_list = [line.strip() for line in file if line.strip()]
     except FileNotFoundError:
-        print(f"❌ Файл {INPUT_FILE} не найден.")
+        print(f"❌ File {INPUT_FILE} not found.")
         return
 
-    print(f"🔍 Проверяем {len(domain_list)} доменов...")
+    print(f"🔍 Check {len(domain_list)} domains...")
     print("=" * 70)
 
-    # Создаем и записываем результаты в CSV файл
+    # Create and save the results to a CSV file
     with open(OUTPUT_FILE, 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         
-        # Записываем заголовок
+        # Write down the title
         writer.writerow(["Domain", "IP Address", "Abuse Confidence Score"])
         
         for domain in domain_list:
-            print(f"🌐 Анализ домена: {domain}")
+            print(f"🌐 Domain Analysis: {domain}")
             
-            # Получаем IP из домена
+            # Obtaining an IP from a domain
             ip_address = get_ip_from_domain(domain)
             
             if ip_address is None:
-                print("   ❌ Не удалось получить IP-адрес\n")
+                print("   ❌ Failed to obtain IP address\n")
                 writer.writerow([domain, "Resolution Error", "N/A"])
                 print("-" * 50)
                 continue
                 
-            print(f"   📡 IP-адрес: {ip_address}")
+            print(f"   📡 IP-adress: {ip_address}")
             
-            # Проверяем IP через AbuseIPDB
+            # Checking IP addresses using AbuseIPDB
             result = check_ip(ip_address)
             
             if result is None:
-                print("   ❌ Не удалось получить данные от AbuseIPDB\n")
+                print("   ❌ Failed to retrieve data from AbuseIPDB\n")
                 writer.writerow([domain, ip_address, "API Error"])
                 print("-" * 50)
                 continue
@@ -93,10 +93,10 @@ def main():
             data = result.get('data', {})
             abuse_score = data.get('abuseConfidenceScore', 0)
             
-            # Записываем данные в CSV
+            # Writing data to CSV
             writer.writerow([domain, ip_address, f"Abuse score {abuse_score}%"])
             
-            # ДЕТАЛЬНЫЙ ВЫВОД НА ЭКРАН
+            # DETAILED SCREEN OUTPUT
             country = data.get('countryCode', 'N/A')
             usage_type = data.get('usageType', 'N/A')
             isp = data.get('isp', 'N/A')
@@ -104,21 +104,21 @@ def main():
             is_whitelisted = data.get('isWhitelisted', False)
             last_reported = data.get('lastReportedAt', 'N/A')
             
-            print(f"   ✅ Уровень угрозы: {abuse_score}%")
-            print(f"   🌍 Страна: {country}")
-            print(f"   💼 Тип использования: {usage_type}")
-            print(f"   📡 Провайдер: {isp}")
-            print(f"   📊 Всего отчетов: {total_reports}")
-            print(f"   🛡️  В белом списке: {is_whitelisted}")
-            print(f"   ⏰ Последний отчет: {last_reported}")
+            print(f"   ✅ Threat level: {abuse_score}%")
+            print(f"   🌍 Country: {country}")
+            print(f"   💼 Type of use: {usage_type}")
+            print(f"   📡 Provider: {isp}")
+            print(f"   📊 Total reports: {total_reports}")
+            print(f"   🛡️  Whitelisted: {is_whitelisted}")
+            print(f"   ⏰ Latest report: {last_reported}")
             print("-" * 50)
             
-            # Принудительно сбрасываем буфер вывода
+            # Forcefully flush the output buffer
             sys.stdout.flush()
 
-    print(f"\n✅ Результаты сохранены в файл: {OUTPUT_FILE}")
+    print(f"\n✅ The results are saved to a file.: {OUTPUT_FILE}")
     print("\n" + "=" * 70)
-    input("🎯 Нажмите Enter чтобы выйти...")
+    input("🎯 Press Enter to exit...")
 
 if __name__ == "__main__":
     main()
