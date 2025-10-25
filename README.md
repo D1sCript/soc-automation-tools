@@ -21,12 +21,10 @@ A collection of Python scripts designed for SOC analysts to automate threat inte
 git clone https://github.com/D1sCript/soc-automation-tools.git
 cd soc-automation-tools
 
-text
 
 2. Install dependencies:
 pip install requests
 
-text
 
 3. Set your AbuseIPDB API key in the scripts:
    - Open `ip_abuse_checker/ip_checker.py`
@@ -39,7 +37,6 @@ text
 
 python ip_abuse_checker/ip_checker.py
 
-text
 
 **How to use:**
 1. Create a file with IP addresses (one per line), e.g., `ips.txt`
@@ -53,20 +50,17 @@ text
 185.220.101.1
 192.168.1.1
 
-text
 
 **Example output:**
 IP Address,Abuse Confidence Score
 8.8.8.8,Abuse score 0%
 185.220.101.1,Abuse score 85%
 
-text
 
 ### Domain Reputation Checker
 
 python domain_abuse_checker/domain_checker.py
 
-text
 
 **How to use:**
 1. Create a file with domains (one per line), e.g., `domains.txt`
@@ -79,7 +73,6 @@ google.com
 example.com
 suspicious-site.xyz
 
-text
 
 ## 📊 Use Cases
 
