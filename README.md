@@ -94,7 +94,7 @@ MIT License - See [LICENSE](LICENSE) for details
 
 **D1sCript**
 - GitHub: [@D1sCript](https://github.com/D1sCript)
-- TryHackMe: [D1sCript](https://tryhackme.com/p/D1sCript)
+- Telegram: [@D1sCript](https://t.me/D1sCript)
 
 ## 🙏 Acknowledgments
 
